@@ -9,8 +9,8 @@ tag_size_in_meters = 0.1
 detector_options = apriltag.DetectorOptions(families="tag36h11")
 tag_detector = apriltag.Detector(detector_options)
 
-video_capture = cv2.VideoCapture(CAMERA_INDEX)
-#video_capture = cv2.VideoCapture("../Downloads/apriltag-pad.jpg")
+#video_capture = cv2.VideoCapture(CAMERA_INDEX)
+video_capture = cv2.VideoCapture("../Downloads/apriltag-pad.jpg")
 
 if not video_capture.isOpened():
     print("error when opening camera video_captureture")
@@ -34,6 +34,8 @@ while True:
         video_capture.release()
         exit()
 
+    frame = cv2.resize(frame, (640,480))
+#    frame = cv2.resize(frame, (800,600))
     grayFrame = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
     tags =tag_detector.detect(grayFrame)
 
@@ -46,12 +48,13 @@ while True:
         cv2.line (frame, tuple(map(int,tag.corners[1])), tuple(map(int,tag.corners[2])), (0,255,0), thickness=2) 
         cv2.line (frame, tuple(map(int,tag.corners[2])), tuple(map(int,tag.corners[3])), (0,255,0), thickness=2) 
         cv2.line (frame, tuple(map(int,tag.corners[3])), tuple(map(int,tag.corners[0])), (0,255,0), thickness=2) 
-
+        
+        cv2.putText(frame, str(tag.tag_id), (int(tag.center[0]), int(tag.center[1])), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 0, 0), 2)
 
     cv2.imshow("kaka", frame)
     #cv2.imshow("kaka", grayFrame) 
 
-    if cv2.waitKey(1) == ord('q'):
+    if cv2.waitKey(0) == ord('q'):
         break
 
 video_capture.release()
